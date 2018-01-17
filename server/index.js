@@ -16,6 +16,17 @@ app.use('/api', api);
 
 
 let port = 3000;
+app.patch('/:username/updateProfile', (req, res) => {
+  var username = req.params.username;
+  var changes = req.body;
+  db.updateProfilePageInfo(username, changes, (err, data) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).json(data);
+    }
+  });
+});
 
 app.listen(process.env.PORT || port, function() {
   console.log(`listening on port ${port}`);
