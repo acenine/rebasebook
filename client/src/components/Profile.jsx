@@ -32,6 +32,7 @@ class Profile extends React.Component {
       profilePageOwner: props.match.params.friendname, // not an error, do not change
       loggedInUserId: props.loggedInUserId
     }
+    console.log("PROFILE PROPS: ", this.props)
   }
 
   componentDidMount() {
@@ -71,6 +72,7 @@ class Profile extends React.Component {
       .catch((error) => {
         console.error(error);
       }); 
+      this.props.getProfile(user);
   }
 
   loadSupplementaryProfileInfo(user) {

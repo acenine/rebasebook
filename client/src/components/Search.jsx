@@ -3,7 +3,7 @@ import { Icon } from 'semantic-ui-react';
 import _ from 'lodash'
 import React, { Component } from 'react'
 import { Search, Grid, Header } from 'semantic-ui-react'
-import { Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 class SearchBar extends Component {
   //retrieve data using ajax call
@@ -21,12 +21,12 @@ class SearchBar extends Component {
   }
 
   componentWillMount() {
-    this.getAllUsers();
+    this.resetComponent()
   }
 
-  // componentDidMount() {
-  //   this.getAllUsers();
-  // }
+  componentDidMount() {
+    this.getAllUsers();
+  }
 
   getAllUsers() {
     var user = this.state.username;
@@ -34,8 +34,9 @@ class SearchBar extends Component {
     .then((response) => {
       let searchNames = response.data.map(function(user){
         return { 
-            "title": user.first_name + ' ' + user.last_name,
-            "description": user.username
+            title: user.first_name + ' ' + user.last_name,
+            description: user.username,
+            image: user.picture_url
         }
       });
       this.setState({
@@ -47,11 +48,11 @@ class SearchBar extends Component {
     }); 
   }
 
-  // resetComponent() {
-  //   this.setState({ isLoading: false, results: [], value: '' })
-  // }
+  resetComponent() {
+    this.setState({ isLoading: false, results: [], value: '', redirect: false })
+  }
 
-  handleResultSelect(e, { result }) { 
+  handleResultSelect(e, { result }) { // result = {title: , description: , image:}
     //go to profile
     // alert(result.description)
     this.setState({
@@ -62,7 +63,7 @@ class SearchBar extends Component {
   }
 
   handleSearchChange(e, { value }) {
-    this.setState({ isLoading: true, value })
+    this.setState({ isLoading: true, value: value })
     setTimeout(() => {
       if (this.state.value.length < 1) return this.resetComponent()
       const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
@@ -75,8 +76,8 @@ class SearchBar extends Component {
   }
 
   render() {
-    const { isLoading, value, results, source, clickedName } = this.state
-    const profileUrl = '/' + this.state.clickedName + '/profile/' + this.props.loggedInUser;
+    const { isLoading, value, results, source, clickedName } = this.state;
+    const profileUrl = '/' + clickedName + '/profile/' + this.props.loggedInUser;
 
     return (
       <div>
@@ -92,7 +93,6 @@ class SearchBar extends Component {
             />
           </div>
         </Grid>
-        {this.state.redirect && <Redirect to={profileUrl} />}
       </div>
     );
   }
