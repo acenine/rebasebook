@@ -225,8 +225,8 @@ const api = {
     getUsers: function (req, res) {
       db.getAllUsers((err, data) => {
         if (err) {
-          console.log(err.message);
-          res.send(400).send('Unable to retrieve all Users');
+          console.error(err.message);
+          res.status(400).send('Unable to retrieve all Users');
         } else {
           res.status(200).json(data);
         }
@@ -342,15 +342,21 @@ const api = {
 };
 
 
+//USERS
+route.get('/search/users', api.users.getUsers); //get all users
+route.post('/friendship', api.user.addFriendship); // CG: ginger's new friendship endpoint
+route.get('/friendship', api.user.getFriendship); // CG: This endpoint returns the status of an existing friendship request between two users.
+route.get('/friend_list', api.user.getAllFriends);
+
 //USER
 route.post('/friendship', api.user.addFriendship); // CG: ginger's new friendship endpoint
 route.get('/friendship', api.user.getFriendship); // CG: This endpoint returns the status of an existing friendship request between two users.
 route.get('/friend_list', api.user.getAllFriends);
 
+route.get('/likers', api.user.getLikers); // get all likers of a particular user
 route.get('/:username/profilePage', api.user.getProfilePage); // get profilePage info for user
 route.get('/:username/friendsList/:otherUsername', api.user.getFriendsList); // get a friends friend list
 route.get('/:firstname/:lastname', api.user.getUsername); //gets the username of a user by first name, last name
-route.get('/likers', api.user.getLikers); // get all likers of a particular user
 route.get('/:username/likes', api.user.getLiked); //get liked users of user
 route.get('/:username/profile/:user', api.user.getProfile); //get profile of a specific user
 route.get('/:username', api.user.getUser); //gets a user
@@ -362,13 +368,10 @@ route.post('/:username', api.user.createUser); //creates a new user
 route.patch('/:username/updateProfile', api.user.updateProfile); //update current user's profile
 
 
-//USERS
-route.get('/search/users', api.users.getUsers); //get all users
-
 //POST
 route.get('/likes', api.post.getNumLikes); // get number of likes
-route.get('/:username/post/author', api.post.getAuthor); // gets the auther of a post
 route.post('/likes/:author', api.post.likePost); //like a post
+route.get('/:username/post/author', api.post.getAuthor); // gets the auther of a post
 route.post('/:username/posts', api.post.createPost); // create new post
 route.delete('/likes/:author', api.post.unlikePost); //unlike a post
 

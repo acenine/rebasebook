@@ -48,6 +48,7 @@ class SignIn extends React.Component {
             newUser: false,
             redirect: true
           });
+          this.props.getUsername(this.state.username);
           this.props.getSignedIn(true);
           this.props.getProfile(this.state.username);
         } else {

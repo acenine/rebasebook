@@ -29,7 +29,7 @@ module.exports = {
   getAllUsers: (callback) => {
     client.query('SELECT * FROM users;', (err, res) => {
       if (err) callback(err, null);
-      callback(null, res.rows);
+      callback(null, res);
     });
   },
   updateProfilePageInfo: (username, change, callback) => {

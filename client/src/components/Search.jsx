@@ -3,7 +3,7 @@ import { Icon } from 'semantic-ui-react';
 import _ from 'lodash'
 import React, { Component } from 'react'
 import { Search, Grid, Header } from 'semantic-ui-react'
-import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 class SearchBar extends Component {
   //retrieve data using ajax call
@@ -17,6 +17,7 @@ class SearchBar extends Component {
       isLoading: false, 
       results: [], 
       value: '',
+      loggedInUser: this.props.loggedInUser,
     }
   }
 
@@ -29,7 +30,6 @@ class SearchBar extends Component {
   }
 
   getAllUsers() {
-    var user = this.state.username;
     axios.get(`/api/search/users`)
     .then((response) => {
       let searchNames = response.data.map(function(user){
@@ -57,15 +57,19 @@ class SearchBar extends Component {
     // alert(result.description)
     this.setState({
       redirect: true,
-      clickedName: result.description
+      clickedName: result.description,
+      value:''
     })
     // this.setState({ value: result.title }) 
   }
 
   handleSearchChange(e, { value }) {
-    this.setState({ isLoading: true, value: value })
+    this.setState({ isLoading: true, value: value})
     setTimeout(() => {
-      if (this.state.value.length < 1) return this.resetComponent()
+      if (this.state.value.length < 1) {
+        this.resetComponent()
+        return
+      }
       const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
       const isMatch = result => re.test(result.title)
       this.setState({
@@ -76,9 +80,15 @@ class SearchBar extends Component {
   }
 
   render() {
-    const { isLoading, value, results, source, clickedName } = this.state;
-    const profileUrl = '/' + clickedName + '/profile/' + this.props.loggedInUser;
-
+    const { isLoading, value, results, source, clickedName, loggedInUser } = this.state;
+    const profileUrl = '/' + clickedName + '/profile/' + loggedInUser;
+    console.log (
+        "value", value,
+        "results", results,
+        "source", source,
+        'clickedName', clickedName,
+        'loggedInUser', loggedInUser
+      )
     return (
       <div>
         <Grid>
@@ -93,6 +103,7 @@ class SearchBar extends Component {
             />
           </div>
         </Grid>
+        {this.state.redirect && <Redirect to={profileUrl} />}
       </div>
     );
   }

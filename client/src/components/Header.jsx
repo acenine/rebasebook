@@ -10,7 +10,6 @@ class Header extends React.Component {
       profilePath: '',
       feedPath: '',
       redirectProfile: false,
-      // username: window.location.pathname.substring(1, window.location.pathname.indexOf('/feed'))
     }
   }
   getUserProfile(user) {
