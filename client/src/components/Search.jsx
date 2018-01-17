@@ -13,17 +13,20 @@ class SearchBar extends Component {
     super(props);
     this.state = {
       redirect: false,
-      clickedName: ''
+      clickedName: '',
+      isLoading: false, 
+      results: [], 
+      value: '',
     }
   }
 
   componentWillMount() {
-    this.resetComponent()
-  }
-
-  componentDidMount() {
     this.getAllUsers();
   }
+
+  // componentDidMount() {
+  //   this.getAllUsers();
+  // }
 
   getAllUsers() {
     var user = this.state.username;
@@ -44,9 +47,9 @@ class SearchBar extends Component {
     }); 
   }
 
-  resetComponent() {
-    this.setState({ isLoading: false, results: [], value: '' })
-  }
+  // resetComponent() {
+  //   this.setState({ isLoading: false, results: [], value: '' })
+  // }
 
   handleResultSelect(e, { result }) { 
     //go to profile
@@ -75,8 +78,7 @@ class SearchBar extends Component {
     const { isLoading, value, results, source, clickedName } = this.state
     const profileUrl = '/' + this.state.clickedName + '/profile/' + this.props.loggedInUser;
 
-    if (this.state.redirect) {
-      return (
+    return (
       <div>
         <Grid>
           <div className="search-bar">
@@ -87,31 +89,12 @@ class SearchBar extends Component {
               results={results}
               value={value}
               className="search-input"
-              // {...this.props}
             />
           </div>
         </Grid>
-        <Redirect to={profileUrl} />
+        {this.state.redirect && <Redirect to={profileUrl} />}
       </div>
-      );
-      // invoke redirect to profile url function
-    }
-
-    return (
-      <Grid>
-        <div className="search-bar">
-          <Search
-            loading={isLoading}
-            onResultSelect={this.handleResultSelect.bind(this)}
-            onSearchChange={this.handleSearchChange.bind(this)}
-            results={results}
-            value={value}
-            className="search-input"
-            // {...this.props}
-          />
-        </div>
-      </Grid>
-    )
+    );
   }
 }
 

@@ -69,12 +69,11 @@ class Profile extends React.Component {
         this.getFriendshipStatus(profileUserId);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       }); 
   }
 
   loadSupplementaryProfileInfo(user) {
-    // var user = this.state.profilePageOwner;
     axios.get(`/api/${user}/profilePage`)
       .then((responseUserProfileInfo) => {
         this.setState({
@@ -82,7 +81,7 @@ class Profile extends React.Component {
         });
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       }); 
   }
 
@@ -95,7 +94,7 @@ class Profile extends React.Component {
         });
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       }); 
   }
 
@@ -170,7 +169,7 @@ class Profile extends React.Component {
         this.getUserProfileInfo(this.state.profilePageOwner);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       }); 
   }
 
