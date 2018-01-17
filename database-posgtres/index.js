@@ -4,7 +4,6 @@ let databaseUrl =  process.env.DATABASE_URL || 'postgres://localhost/therebasebo
 const client = new Client({
   connectionString: databaseUrl
 });
-console.log('Database URL at: ', databaseUrl);
 
 // For pure SQL, refer to database as 'client'
 
@@ -45,7 +44,7 @@ module.exports = {
         if (change[0] === 'profile_picture') {
           client.query(`UPDATE users set picture_url = '${change[1]}' WHERE username = '${username}'`, (err, res) => {
             if (err) {
-              console.log('error updating profile pic in users table', err);
+              console.error('error updating profile pic in users table', err);
               callback(err, null);
             } else {  
             }
@@ -56,7 +55,6 @@ module.exports = {
     });
   },
   createPost: (username, text, callback) => {
-    // console.log('This is my client', client);
     let queryStr =
       `INSERT INTO posts (post_text, user_id)
       VALUES ('${text}', (SELECT id FROM users WHERE username = '${username}'))`;
@@ -76,7 +74,6 @@ module.exports = {
       posts.user_id AND posts.post_text = 
       '${text}' AND posts.user_id = 
       (SELECT id FROM users WHERE username = '${author}')))`;
-
     client.query(queryStr, (err, res) => {
       if (err) {
         callback(err, null);
@@ -93,7 +90,6 @@ module.exports = {
       posts.user_id AND posts.post_text = 
       '${text}' AND posts.user_id = 
       (SELECT id FROM users WHERE username = '${author}'))`;
-
     client.query(queryStr, (err, res) => {
       if (err) {
         callback(err, null);
@@ -116,7 +112,6 @@ module.exports = {
     });
   },
   getPersonalLikeAmount: (username, text, callback) => {
-
     let queryStr =
     `SELECT count(user_id) FROM user_posts_liked INNER JOIN 
     users ON users.id = user_posts_liked.user_id AND 
@@ -158,7 +153,7 @@ module.exports = {
     let queryStr = 'SELECT posts.*, users.id, users.first_name, users.last_name, users.username FROM posts INNER JOIN users ON users.id = posts.user_id ORDER BY id DESC';
     client.query(queryStr, (err, res) => {
       if (err) {
-        console.log(err.message);
+        console.error(err.message);
         callback(err, null);
       } else {
         callback(null, res.rows);
@@ -169,21 +164,20 @@ module.exports = {
   getUser: (username, callback) => {
     client.query(`SELECT * FROM users WHERE username='${username}';`, (err, res) => {
       if (err) {
-        console.log('Error', err)
+        console.error('Error', err)
         callback(err, null);
-      } else {  
+      } else { 
         callback(null, res.rows);
       }  
     });
   },
   //retrieves all users
   getAllUsers: (callback) => {
-    // console.log('in db getUser, looking for', username)
     client.query(`SELECT * FROM users;`, (err, res) => {
       if (err) {
-        console.log(err.message)
+        console.error(err.message)
         callback(err, null);
-      } else {  
+      } else {
         callback(null, res.rows);
       }  
     });
@@ -192,9 +186,9 @@ module.exports = {
   getUsername: (firstname, lastname, callback) => {
     client.query(`SELECT username FROM users WHERE first_name='${firstname}' AND last_name='${lastname}'`, (err, res) => {
       if (err) {
-        console.log(err.message)
+        console.error(err.message)
         callback(err, null);
-      } else {  
+      } else {
         callback(null, res.rows);
       } 
     })
@@ -205,7 +199,7 @@ module.exports = {
     AND posts.post_text = '${text}'`;
     client.query(queryStr, (err, res) => {
       if (err) {
-        console.log(err.message);
+        console.error(err.message);
         callback(err, null);
       } else {
         callback(null, res.rows);
@@ -214,11 +208,10 @@ module.exports = {
   },
   //add user to db
   addUser: (userData, callback) => {
-    console.log('in db addUser start......', userData)
     client.query(`INSERT INTO users (username, first_name, last_name, picture_url) VALUES ('${userData.username}', '${userData.firstName}', '${userData.lastName}', '${userData.pictureUrl}');`, (err, res) => {
       if (err) {
         callback(err.detail, null);
-      } else {  
+      } else { 
         callback(null, res.rows);
       }
     });
@@ -229,9 +222,9 @@ module.exports = {
     defaultProfile = JSON.stringify(defaultProfile);
     client.query(`INSERT INTO user_profiles (user_id, user_data) VALUES ((SELECT id FROM users WHERE username='${username}'), '${defaultProfile}')`, (err, res) => {
       if (err) {
-        console.log(err.message);
+        console.error(err.message);
         callback(err, null);
-      } else {  
+      } else {
         callback(null, res.rows);
       }
     });
@@ -245,7 +238,7 @@ module.exports = {
     };
     client.query(query, (err, res) => {
       if (err) {
-        console.log(err.message);
+        console.error(err.message);
         callback(err, null);
       } else {
         callback(null, res.rows);
@@ -259,27 +252,26 @@ module.exports = {
       ('${username2}', (SELECT id FROM users WHERE username='${username1}'));`
     client.query(queryStr, (err, res) => {
       if (err) {
-        console.log(err.message)
+        console.error(err.message)
         callback(err, null);
-      } else {  
+      } else {
         callback(null, res.rows);
       }  
     });
   },
   getFriendsList: (username, callback) => {
-    // console.log('in db getFriendsList')
+    // console.error('in db getFriendsList')
     let queryStr = `SELECT users.* FROM users INNER JOIN user_friends ON (user_friends.friend_id = users.id) WHERE user_friends.username = '${username}';`
     client.query(queryStr, (err, res) => {
       if (err) {
-        console.log(err.message)
+        console.error(err.message)
         callback(err, null);
-      } else {  
+      } else {
         callback(null, res.rows);
       }  
     });
   },
   findPostsByFriends: (username, callback) => {
-    // console.log('in db findPostsByFriends')
     let queryStr =
     `SELECT posts.*, users.username, users.id, users.first_name, users.last_name FROM posts INNER JOIN 
     users ON users.id = posts.user_id INNER JOIN user_friends ON 
@@ -287,9 +279,9 @@ module.exports = {
     '${username}' ORDER BY posts.id DESC`;
     client.query(queryStr, (err, res) => {
       if (err) {
-        console.log(err.message)
+        console.error(err.message)
         callback(err, null);
-      } else {  
+      } else {
         callback(null, res.rows);
       }  
     });
@@ -302,11 +294,9 @@ module.exports = {
       '${username}')) ORDER BY posts.id DESC`;
     client.query(queryStr, (err, res) => {
       if (err) {
-        console.log('Error', err)
+        console.error('Error', err)
         callback(err, null);
-      } else {  
-        console.log('/:username/posts/nonfriends posts from db...')
-        // console.log('res', res);
+      } else {
         callback(null, res.rows);
       }  
     });
@@ -316,16 +306,14 @@ module.exports = {
     var queryTwo = `DELETE FROM user_friends where username = '${friendToRemove}' AND friend_id = (SELECT id FROM users WHERE username = '${username}')`;
     client.query(queryOne, (err, res) => {
       if (err) {
-        console.log('Error', err)
+        console.error('Error', err)
         callback(err, null);
-      } else {  
-        console.log('successfully removed one permutation of friends');
+      } else {
         client.query(queryTwo, (err, res) => {
           if (err) {
-            console.log('Error', err)
+            console.error('Error', err)
             callback(err, null);
-          } else {  
-            console.log('successfully removed both permutations of friends');
+          } else {
             callback(null, res.rows);
           }  
         });
@@ -333,14 +321,11 @@ module.exports = {
     });
   },
   getProfilePageInfo: (username, callback) => {
-    console.log('getting profile page info....');
     var query = `SELECT * from user_profiles WHERE user_id = (SELECT id FROM users WHERE username = '${username}')`;
-    console.log(query);
     client.query(query, (err, res) => {
       if (err) {
         callback(err, null);
-      } else {  
-        // console.log('res', res);
+      } else {
         callback(null, res.rows);
       }  
     });
