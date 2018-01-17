@@ -76,19 +76,12 @@ class SearchBar extends Component {
         isLoading: false,
         results: _.filter(this.state.source, isMatch),
       })
-    }, 500)
+    }, 0)
   }
 
   render() {
     const { isLoading, value, results, source, clickedName, loggedInUser } = this.state;
-    const profileUrl = '/' + clickedName + '/profile/' + loggedInUser;
-    console.log (
-        "value", value,
-        "results", results,
-        "source", source,
-        'clickedName', clickedName,
-        'loggedInUser', loggedInUser
-      )
+    const profileUrl = `/profile/${clickedName}`;
     return (
       <div>
         <Grid>

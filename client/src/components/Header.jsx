@@ -19,7 +19,7 @@ class Header extends React.Component {
     this.props.getSignedIn(false);
   }
   render() {
-    const profilePath = '/' + this.props.name + '/profile/' + this.props.name;
+    const profilePath = `/profile/${this.props.name}`;
     const feedPath = '/' + this.props.name + '/feed';
     return (
       <div className="global-header">

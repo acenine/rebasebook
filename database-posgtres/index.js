@@ -150,7 +150,7 @@ module.exports = {
     });
   },
   getAllPosts: (callback) => {
-    let queryStr = 'SELECT posts.*, users.id, users.first_name, users.last_name, users.username FROM posts INNER JOIN users ON users.id = posts.user_id ORDER BY id DESC';
+    let queryStr = 'SELECT posts.*, users.first_name, users.last_name FROM posts INNER JOIN users ON users.id = posts.user_id ORDER BY id DESC';
     client.query(queryStr, (err, res) => {
       if (err) {
         console.error(err.message);
@@ -273,7 +273,7 @@ module.exports = {
   },
   findPostsByFriends: (username, callback) => {
     let queryStr =
-    `SELECT posts.*, users.username, users.id, users.first_name, users.last_name FROM posts INNER JOIN 
+    `SELECT posts.*, users.first_name, users.last_name FROM posts INNER JOIN 
     users ON users.id = posts.user_id INNER JOIN user_friends ON 
     (user_friends.friend_id = posts.user_id) AND user_friends.username = 
     '${username}' ORDER BY posts.id DESC`;
@@ -288,7 +288,7 @@ module.exports = {
   },
   findPostsByNonFriends: (username, callback) => {
     let queryStr = 
-    `SELECT posts.*, users.username, users.id, users.first_name, users.last_name FROM posts 
+    `SELECT posts.*, users.first_name, users.last_name FROM posts 
     INNER JOIN users ON posts.user_id = users.id AND users.id IN (SELECT users.id FROM users WHERE users.id NOT IN (SELECT user_friends.friend_id 
       FROM user_friends WHERE user_friends.username = 
       '${username}')) ORDER BY posts.id DESC`;
@@ -408,17 +408,17 @@ module.exports = {
 
   returnFriendships: (userId, state) => {
     if (state === 'request') {
-      return pg('users_friendships')
+      return (pg('users_friendships')
         .select('users_friendships.state', 'users.id', 'users.username', 'users.first_name', 'users.last_name', 'users.picture_url')
         .innerJoin('users', 'users.id', 'users_friendships.user_id_to')
         .where({'user_id_to': userId})
-        .where({'state': 'request'})
+        .where({'state': 'request'}))
     } else {
-      return pg('users_friendships')
+      return (pg('users_friendships')
         .select('users_friendships.state', 'users.id', 'users.username', 'users.first_name', 'users.last_name', 'users.picture_url')
         .innerJoin('users', 'users.id', 'users_friendships.user_id_to')
         .where({'user_id_from': userId})
-        .where({'state': 'friend'});
+        .where({'state': 'friend'}))
     }
   }
 }

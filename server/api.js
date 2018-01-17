@@ -204,7 +204,6 @@ const api = {
 
       let userId = parseInt(req.query.userId);
       let type = req.query.type === 'requests' ? 'request' : 'friend';
-      console.log('getting friends for', userId, type);
       if (!userId) {
         res.status(400).json('bad request');
       }
