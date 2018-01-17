@@ -9,7 +9,6 @@
     "start:debug": "nodemon --inspect server/index.js",
     "postinstall": "webpack --config ./webpack.config.js"
   },
-  "author": "Albert Chang",
   "license": "ISC",
   "devDependencies": {},
   "dependencies": {

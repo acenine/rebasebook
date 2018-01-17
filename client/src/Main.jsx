@@ -94,7 +94,7 @@ class Main extends React.Component {
               />
             } 
           />
-          <Route 
+          <Route
             path='/profile/:friendname'
             component={ (routeProps) =>
               <Profile 

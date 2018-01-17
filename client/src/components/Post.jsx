@@ -113,7 +113,7 @@ class Post extends React.Component {
         })
       })
       .catch((err) => {
-        console.log('Error getting likers', err);
+        console.error('Error getting likers', err);
       })
   }
   render() {
